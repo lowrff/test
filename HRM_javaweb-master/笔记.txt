@@ -1,0 +1,59 @@
+1.首先打开mysql数据库 新建一个数据库login，然后生成对应的表结构（navicat for mysql可视化操作mysql数据库，链接：http://download.csdn.net/download/qq_23994787/10168988）
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `pwd` varchar(255) NOT NULL,
+  `info` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `employee`(
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `pwd` varchar(255) NOT NULL,
+  `sex` varchar(255) NOT NULL,
+   `position` varchar(255) NOT NULL,
+   `salary` demical(7,3) NOT NULL,
+  `home` varchar(255) NOT NULL,
+  `info` varchar(255),
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `user` VALUES ('1', 'jie', '123456', '管理员');
+INSERT INTO `employee` VALUES ('1', '捷', '123456', '男', 'java软件设计师','5000','衡阳', 'javaweb程序员)
+
+2.然后打开MyEclipse新建一个web项目
+3.在webroot下的WEB-INF下的lib中导入mysql的驱动jar包，（导入standard.jar包和jstl.jar包，有可能）
+4.建立对应的包结构 
+	com.filter   //过滤器 解决中文字符集乱码
+	com.util     //数据库连接工具类
+	com.entity   //实体类
+	com.dao      //数据操作类
+	com.servlet   //servlet类
+5.在filter下新建一个EncodingFilter用来解决中文字符集乱码，它需要继承Filter接口
+6.到web.xml下进行对EncodingFilter相应的配置
+7.在util下新建一个DBconn类用来处理对数据库的连接操作
+8.在entity下新建一个User实体类
+9.在dao下新建一个UserDao接口  以及对应的方法实现类
+10.在servlet下创建Log_in_Servlet用来实现对用户登录的操作
+11.在servlet下创建一个Register_User_Servlet用来实现管理员注册的操作,还有一个Register_Employee_Servlet用来实现注册员工的操作
+12.在servlet下创建Searchall用来返回数据库中所有员工信息
+13.在servlet下创建DeleteServlet用来删除员工操作
+14.在servlet下创建UpdateServlet操作用来更新员工信息
+15.相关jsp文件有备注（再提交表单之前用js判断为非空在提交）
+16.log_in.jsp是一开始的登录界面
+17.fail.jsp是失败界面
+18.register_em是员工注册界面
+19.register_user是管理员注册界面
+20.showall是员工管理界面
+21.success是登录成功界面
+22.web_xml配置sevlet相关信息（Servlet有两种方式创建，一种手工创建。另一种程序自动生成。前者自己创建java类，实现Servlet具体内容，然后需要去WEB_INF下的web.xml去配置servlet  . 而后者则直接由程序替我们配置好了Servlet）
+23.form表单中需要注意的是<form action="Log_in_Servlet"  method="post">
+其中action即为要跳转的servlet路径（即在web.xml中配置的servlet-mapping   ：<url-pattern>/Log_in_Servlet</url-pattern>   ，）写  /  后的内容。
+method="post"为传递值得方法类型有两种，第一种get,第二种post。网上介绍这两种的区别有很多，阐述的又是百家争鸣。而我觉得那个方便就用那个，一般使用post传递，可避免乱码。
+另一个需要注意的是   用户名：<input type="text" name="name" value="">,input标签  一定要起个名字  如name="name", 
+起名的作用就是让后台通过request.getParterment("name")来取值
+24.页面使用的到JSTL表达式 即c标签。使用c标签需要引入头文件<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 。
+需要注意的的是El标签配合JSTl标签的使用，<c:forEach var="U" items="${userAll}"  >   例子foeEach标签的遍历内容即为EL表达式获取的${userAll}
+而且当指定别名后var="U"  ，别名可以随便起，为了方便一般是小写类名命名。  
+C标签内遍历的属性也是需要用${  }获取。此时别名U即为当前集合中的User对象，想得到属性只需要用 ${ U.属性名 }即可。
